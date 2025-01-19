@@ -38,7 +38,6 @@ public class HtmlReportGenerator {
     }*/
 
 
-
     public void generateReport(Map<String, List<String>> results, String filePath) throws IOException {
         FileWriter writer = new FileWriter(filePath);
         writer.write("<html><head><style>");
@@ -54,21 +53,25 @@ public class HtmlReportGenerator {
         //writer.write("footer { text-align: center; padding: 10px; background-color: #4CAF50; color: white; position: fixed; bottom: 0; width: 100%; }");
         writer.write("header { text-align: center; padding: 5px; background-color: #4CAF50; color: white; position: fixed; top: 0; width: 100%; }");
         writer.write("</style></head><body>");
-       // writer.write("<header>  <h1>Missing Code Utility Report </h1> </header>");
+        // writer.write("<header>  <h1>Missing Code Utility Report </h1> </header>");
         writer.write("<h1>Missing Code Reports</h1>");
         writer.write("<table>");
         writer.write("<tr><th>EFX Fields Path</th><th>Status</th><th> File Name Location</th></tr>");
 
-        for (Map.Entry<String, List<String>> entry : results.entrySet()) {
-            List<String> filenames = entry.getValue();
-            String status = filenames.get(0).equals("Not Implemented") ? "Not Implemented" : "Implemented";
-            String colorClass = status.equals("Implemented") ? "green" : "red";
+        if (results.entrySet().isEmpty()) {
+            writer.write("<tr><td colspan='3' style='text-align:center; color:red;'>No Record Found</td></tr>");
+        } else {
+            for (Map.Entry<String, List<String>> entry : results.entrySet()) {
+                List<String> filenames = entry.getValue();
+                String status = filenames.get(0).equals("Not Implemented") ? "Not Implemented" : "Implemented";
+                String colorClass = status.equals("Implemented") ? "green" : "red";
 
-            writer.write("<tr><td>" + entry.getKey() + "</td><td class='" + colorClass + "'>" + status + "</td><td>");
-            writer.write("<ul class='" + colorClass + "'>");
-            for (String filename : filenames) {
-                if (!filename.equals("Not Implemented")) {
-                    writer.write("<li>" + filename + "</li>");
+                writer.write("<tr><td>" + entry.getKey() + "</td><td class='" + colorClass + "'>" + status + "</td><td>");
+                writer.write("<ul class='" + colorClass + "'>");
+                for (String filename : filenames) {
+                    if (!filename.equals("Not Implemented")) {
+                        writer.write("<li>" + filename + "</li>");
+                    }
                 }
             }
             writer.write("</ul>");
@@ -76,7 +79,7 @@ public class HtmlReportGenerator {
         }
 
         writer.write("</table>");
-       // writer.write("<footer>Report generated on " + java.time.LocalDateTime.now() + "</footer>");
+        // writer.write("<footer>Report generated on " + java.time.LocalDateTime.now() + "</footer>");
         writer.write("</body></html>");
         writer.close();
     }
